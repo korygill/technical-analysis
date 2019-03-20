@@ -1,6 +1,6 @@
-# VIX_BTFG_STFG #
+# $VIX Fear & Greed Mean Reversion Strategy (VIX_FGMR) #
 
-This is a long/short study based on the work of [@kerberos007](https://twitter.com/kerberos007). If you look at their feed, you will see lots of work regarding this strategy using Bollinger Bands, Percent B (%B), and some initial parameters that give good back testing results.
+This is a long/short strategy based on the work of [@kerberos007](https://twitter.com/kerberos007). If you look at their feed, you will see lots of work regarding this strategy using Bollinger Bands, Percent B (%B), and some initial parameters that give good back testing results.
 
 As with any strategy, you should understand it, tweak it to your own risk profile, and extend it to incorporate other indicators and strategies.
 
@@ -10,7 +10,7 @@ Alternatively, just buy or sell the glitch!
 
 This strategy/study is for the VIX.
 
-A *strategy* for this study is still under development... This study can be used independently, or you can find this study in use on the [BTFG_STFG](/BTFG_STFG/BTFG_STFG.md) page. See that page for a lot of info on how to configure studies in thinkorswim.
+A *strategy* for this study is still under development... This study can be used independently, or you can find this study in use on the [FGMR](/FGMR/FGMR.md) page. See that page for a lot of info on how to configure studies in thinkorswim.
 
 Per the aformentioned work from [@kerberos007](https://twitter.com/kerberos007)
 
@@ -26,7 +26,7 @@ A *Study* will fire many times more than its corresponding *Strategy*. This is a
 
 ## post script ##
 
-These studies may or may not work on other synbols. With modifications to the parameters, maybe they work better for Gold than the Euro. Welcome to technical analysis and your journey down the rabbit hole.
+These studies may or may not work on other symbols. With modifications to the parameters, maybe they work better for Gold than the Euro. Welcome to technical analysis and your journey down the rabbit hole.
 
 ## feedback welcome ##
 

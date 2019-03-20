@@ -1,5 +1,5 @@
 #
-# BTFG_STFG
+# $SPX Fear & Greed Mean Reversion Study (FGMR)
 #
 # This script adapted from posts from @kerberos007
 # https://twitter.com/kerberos007

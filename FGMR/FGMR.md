@@ -1,21 +1,21 @@
-# BTFG_STFG #
+# $SPX Fear & Greed Mean Reversion Strategy (FGMR) #
 
-This is a long/short study based on the work of [@kerberos007](https://twitter.com/kerberos007). If you look at their feed, you will see lots of work regarding this strategy using Bollinger Bands, Percent B (%B), and some initial parameters that give good back testing results.
+This is a long/short strategy based on the work of [@kerberos007](https://twitter.com/kerberos007). If you look at their feed, you will see lots of work regarding this strategy using Bollinger Bands, Percent B (%B), and some initial parameters that give good back testing results.
 
 As with any strategy, you should understand it, tweak it to your own risk profile, and extend it to incorporate other indicators and strategies.
 
 Alternatively, just buy or sell the glitch!
 
-## A picture is worth a thousand words, BTFG_STFG on SPX ##
+## A picture is worth a thousand words, FGMR on SPX ##
 
 ![spx-strategy-and-study](spx-strategy-and-study.png "spx-strategy-and-study")
 
 ### Legend ###
 
-    1 SPX 1D chart with BTFG_STFG Strategy
-    2 BTFG_STFG Study
-    3 VIX_BTFG_STFG Study for Calls
-    4 VIX_BTFG_STFG Study for Puts
+    1 SPX 1D chart with FGMR Strategy
+    2 FGMR Study
+    3 VIX_FGMR Study for Calls
+    4 VIX_FGMR Study for Puts
     5 Floating P&L for the strategy
 
     Green, go long, buy calls
@@ -35,7 +35,7 @@ A *Study* will fire many times more than its corresponding *Strategy*. This is a
 
 The #1 strategy is the strategy version of the #2 study.
 
-The #3 and #4 studies are a variant of the %B indicators used in BTFG_STFG. These are not incorporated into the strategy (at least yet). You can use the VIX_BTFG_STFG Study for trading the VIX. Check out [VIX_BTFG_STFG](/VIX_BTFG_STFG/VIX_BTFG_STFG.md) for details.
+The #3 and #4 studies are a variant of the %B indicators used in FGMR. These are not incorporated into the strategy (at least yet). You can use the VIX_FGMR Study for trading the VIX. Check out [VIX_FGMR](/VIX_FGMR/VIX_FGMR.md) for details.
 
 When #3 shows VIX %B overbought and SPX %B is oversold, there's a good chance for bottom in the SPX.
 
@@ -45,11 +45,11 @@ Similarly, when #4 shows VIX %B oversold and SPX %B is overbought, there's a goo
 
 The thinkscript code for the strategies and studies are below. They are saved as txt files so they can be opened easily. You will need to create a new study or strategy in thinkorswim and copy/paste them in.
 
-[BTFG_STFG_Strat](/BTFG_STFG/BTFG_STFG_Strat.txt)
+[FGMR_Strat](/FGMR/FGMR_Strat.txt)
 
-[BTFG_STFG](/BTFG_STFG/BTFG_STFG.txt)
+[FGMR](/FGMR/FGMR.txt)
 
-[VIX_BTFG_STFG](/VIX_BTFG_STFG/VIX_BTFG_STFG.txt)
+[VIX_FGMR](/VIX_FGMR/VIX_FGMR.txt)
 
 
 From the Studies menu on your chart, choose "Edit studies..." and get the following dialog. Configure as shown, and you should have a screen that matches the screen at the top of this page.
@@ -64,14 +64,14 @@ I loaded a 10 year, 1 day chart of SPX, and generated the following report. You 
 
 ![strategy-report](strategy-report.png "strategy-report")
 
-Here's the csv file I exported from my study: [BTFG-STFG-StrategyReports-SPX.csv](/BTFG_STFG/BTFG-STFG-StrategyReports-SPX.csv)
+Here's the csv file I exported from my study: [FGMR-StrategyReports-SPX.csv](/FGMR/FGMR-StrategyReports-SPX.csv)
 
 
 Check out [Trading System Special: Testing Your Strategy](https://tickertape.tdameritrade.com/trading/trading-system-special-testing-your-strategy-15192) for some starting ideas.
 
 ## post script ##
 
-These studies may or may not work on other synbols. With modifications to the parameters, maybe they work better for Gold than the Euro. Welcome to technical analysis and your journey down the rabbit hole.
+These studies may or may not work on other symbols. With modifications to the parameters, maybe they work better for Gold than the Euro. Welcome to technical analysis and your journey down the rabbit hole.
 
 ## feedback welcome ##
 

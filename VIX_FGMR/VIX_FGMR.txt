@@ -1,5 +1,5 @@
 #
-# VIX_BTFG_STFG
+# $VIX Fear & Greed Mean Reversion Study (VIX_FGMR)
 #
 # This script adapted from posts from @kerberos007
 # https://twitter.com/kerberos007

@@ -1,5 +1,5 @@
 #
-# BTFG_STFG_Strat
+# $SPX Fear & Greed Mean Reversion Strategy (FGMR_Strat)
 #
 # This script adapted from posts from @kerberos007
 # https://twitter.com/kerberos007

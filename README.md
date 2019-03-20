@@ -5,10 +5,14 @@ Bookmark this page. It contains links to all other content, which may be reorgan
 
 # thinkorswim / thinkscript strategies and studies #
 
-[BTFG_STFG](/BTFG_STFG/BTFG_STFG.md)
+## $SPX Fear & Greed Mean Reversion Strategy (FGMR) ##
 
-This is a long/short study based on the work of [@kerberos007](https://twitter.com/kerberos007). If you look at their feed, you will see lots of work regarding this strategy using Bollinger Bands, Percent B (%B), and some initial parameters that give good back testing results.
+[FGMR](/FGMR/FGMR.md)
 
-[VIX_BTFG_STFG](/VIX_BTFG_STFG/VIX_BTFG_STFG.md)
+This is a long/short strategy based on the work of [@kerberos007](https://twitter.com/kerberos007). If you look at his feed, you will see lots of work regarding this strategy using Bollinger Bands, Percent B (%B), and some initial parameters that give good back testing results.
 
-This is a long/short study based on the work of [@kerberos007](https://twitter.com/kerberos007). If you look at their feed, you will see lots of work regarding this strategy using Bollinger Bands, Percent B (%B), and some initial parameters that give good back testing results.
+## $VIX Fear & Greed Mean Reversion Strategy (VIX_FGMR) ##
+
+[VIX_FGMR](/VIX_FGMR/VIX_FGMR.md)
+
+This is a long/short strategy based on the work of [@kerberos007](https://twitter.com/kerberos007). If you look at his feed, you will see lots of work regarding this strategy using Bollinger Bands, Percent B (%B), and some initial parameters that give good back testing results.
