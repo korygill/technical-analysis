@@ -12,6 +12,8 @@ This strategy/study is for the VIX.
 
 A *strategy* for this study is still under development... This study can be used independently, or you can find this study in use on the [FGMR](/FGMR/FGMR.md) page. See that page for a lot of info on how to configure studies in thinkorswim.
 
+[VIX_FGMR](/VIX_FGMR/VIX_FGMR.txt)
+
 Per the aformentioned work from [@kerberos007](https://twitter.com/kerberos007)
 
     Calls
