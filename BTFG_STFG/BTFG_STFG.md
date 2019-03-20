@@ -64,6 +64,9 @@ I loaded a 10 year, 1 day chart of SPX, and generated the following report. You 
 
 ![strategy-report](strategy-report.png "strategy-report")
 
+Here's the csv file I exported from my study: [BTFG-STFG-StrategyReports-SPX.csv](/BTFG_STFG/BTFG-STFG-StrategyReports-SPX.csv)
+
+
 Check out [Trading System Special: Testing Your Strategy](https://tickertape.tdameritrade.com/trading/trading-system-special-testing-your-strategy-15192) for some starting ideas.
 
 ## post script ##
