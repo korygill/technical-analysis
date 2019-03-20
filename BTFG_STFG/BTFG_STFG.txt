@@ -5,7 +5,8 @@
 # https://twitter.com/kerberos007
 # 
 # Want the latest version of this script?
-# https://github.com/korygill/technical-analysis#
+# https://github.com/korygill/technical-analysis
+#
 # Use on thinkorswim and thinkscript
 # author @korygill
 #
