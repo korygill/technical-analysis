@@ -1,6 +1,6 @@
 # $VIX Fear & Greed Mean Reversion Strategy (VIX_FGMR) #
 
-This is a long/short strategy based on the work of [@kerberos007](https://twitter.com/kerberos007). If you look at their feed, you will see lots of work regarding this strategy using Bollinger Bands, Percent B (%B), and some initial parameters that give good back testing results.
+This is a long/short strategy based on the work of [@kerberos007](https://twitter.com/kerberos007). If you look at his feed, you will see lots of work regarding this strategy using Bollinger Bands, Percent B (%B), and some initial parameters that give good back testing results.
 
 As with any strategy, you should understand it, tweak it to your own risk profile, and extend it to incorporate other indicators and strategies.
 
