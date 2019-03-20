@@ -4,4 +4,4 @@ This is a long/short study is based on the work of [@kerberos007](https://twitte
 
 
 ---
-back to [readme.md](/readme.md)
+back to [README.md](/README.md)
