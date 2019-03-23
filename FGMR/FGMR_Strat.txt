@@ -15,7 +15,7 @@ script GetBollingerBandPercent
 {
     input price = close;
     input upper = 2;
-    input lower = 2;
+    input lower = -2;
     input averageType = AverageType.SIMPLE;
     input displace = 0;
     input length = 20;
