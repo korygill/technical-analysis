@@ -150,8 +150,8 @@ Add-Statistic "Average Points:" $points.Average
 Add-Statistic "Maximum Points:" $points.Maximum
 Add-Statistic "Minimum Points:" $points.Minimum
 
-$shortTrades = $tradepl | ? {$_.Amount -lt 0}
-$longTrades = $tradepl | ? {$_.Amount -gt 0}
+$shortTrades = $tradepl | ? {$_.Amount -gt 0}
+$longTrades = $tradepl | ? {$_.Amount -lt 0}
 
 Add-Statistic "Short Trades:" $shortTrades.Count
 Add-Statistic "Long Trades:" $longTrades.Count
@@ -173,8 +173,8 @@ Write-Output "  To: $($tradepl[-1].'Date/Time')"
 $outData | Select Statistic, Data | ft
 
 Write-Header
-Write-Output "Trade distribution by size (1 ES == 50 units)"
-$tradepl | Group Amount | Sort {[int]$_.Name} | Select @{n='Trades'; e={$_.Count}}, @{n='TradeSize';e={$_.Name}} | ft
+Write-Output "Trade distribution by trade size (1 ES == 50 units)"
+$tradepl | Group Amount | Sort {[int]$_.Name} | Select @{n='Trades'; e={$_.Count}}, @{n='TradeSize';e={[int]$_.Name*-1}} | ft
 
 # calc trade length stats
 $openCloseTrade = [System.Collections.ArrayList]::new()
