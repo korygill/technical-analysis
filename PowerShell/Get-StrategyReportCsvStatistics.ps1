@@ -80,6 +80,15 @@ $outData = [System.Collections.ArrayList]::new()
 $content = Get-Content -Path $File
 $csvdata = $content | ? {$_ -match ";.*;"} | ConvertFrom-Csv -Delimiter ';'
 
+$tradeUnitSize = 0;
+if ($csvdata.Count)
+{
+    $tradeUnitSize = [math]::Abs($csvdata[0].Amount)
+}
+
+Write-Header
+Write-Output "Trade Unit Size is '$tradeUnitSize' (FYI: 1 ES == 50 SPX units)`r`n"
+
 # convert currency strings to decimal
 # calculate properties
 foreach ($item in $csvdata)
@@ -98,7 +107,7 @@ foreach ($item in $csvdata)
     else
     {
         $apl = [math]::Abs($item.Amount)
-        $item | Add-Member -MemberType NoteProperty -Name "Points" -Value ($tpl/$apl*($apl/50))
+        $item | Add-Member -MemberType NoteProperty -Name "Points" -Value ($tpl/$apl*($apl/$tradeUnitSize))
     }
 }
 
@@ -173,7 +182,7 @@ Write-Output "  To: $($tradepl[-1].'Date/Time')"
 $outData | Select Statistic, Data | ft
 
 Write-Header
-Write-Output "Trade distribution by trade size (1 ES == 50 units)"
+Write-Output "Trade distribution by trade size (1 ES == 50 SPX units)"
 $tradepl | Group Amount | Sort {[int]$_.Name} | Select @{n='Trades'; e={$_.Count}}, @{n='TradeSize';e={[int]$_.Name*-1}} | ft
 
 # calc trade length stats
@@ -249,6 +258,4 @@ foreach ($trade in $sells)
 Write-Header
 Write-Output "Short Trade Size by Duration"
 $tradeDuration.TotalDays | group | sort {[int]$_.Count}, {[int]$_.Name} | Select @{n='TradeSize'; e={$_.Count}}, @{n='Days';e={$_.Name}} | ft
-
-
 
