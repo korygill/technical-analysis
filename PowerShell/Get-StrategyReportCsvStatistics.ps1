@@ -87,7 +87,7 @@ if ($csvdata.Count)
 }
 
 Write-Header
-Write-Output "Trade Unit Size is '$tradeUnitSize' (FYI: 1 ES == 50 SPX units)`r`n"
+Write-Output "Trade Unite Size is '$tradeUnitSize' (FYI: 1 ES == 50 SPX units)`r`n"
 
 # convert currency strings to decimal
 # calculate properties
@@ -117,12 +117,118 @@ if ($ShowFileContents)
 }
 
 #
+# get only lines that have Trade P/L
+#
+$tradepl = $csvdata | ? {$_.'Trade P/L'}
+#$tradepl = $csvdata | ? {$_.'Trade P/L' -and ($_.'Date/Time' -lt [datetime]::Parse('12/15/2018') -or $_.'Date/Time' -gt [datetime]::Parse('12/31/2018'))}
+
+Write-Header
+Write-Output "Trade distribution by trade size (1 ES == 50 SPX units)"
+$tradepl | Group Amount | Sort {[int]$_.Name} | Select @{n='Trades'; e={$_.Count}}, @{n='TradeSize';e={[int]$_.Name*-1}} | ft
+
+#
+# calc trade length stats
+#
+$openCloseTrade = [System.Collections.ArrayList]::new()
+$firstOpen = $false
+$openTrade = $null
+$closeTrade = $null
+
+foreach ($item in $csvdata)
+{
+    if ($item.Side -match "to Open" -and $firstOpen -eq $false)
+    {
+        $firstOpen = $true
+        $openTrade = $item
+    }
+    elseif ($item.Side -match "to Close")
+    {
+        $firstOpen = $false
+        $closeTrade = $item
+
+        $null = $openCloseTrade.Add(
+            [PSCustomObject]@{
+                'FirstOpenTrade'=$openTrade
+                'CloseTrade'=$closeTrade
+                }
+            )
+    }
+}
+
+#
+# all trades
+#
+$tradeDuration = [System.Collections.ArrayList]::new()
+
+foreach ($trade in $openCloseTrade)
+{
+    $openDate = [datetime]::Parse($trade.FirstOpenTrade.'Date/Time')
+    $closeDate = [datetime]::Parse($trade.CloseTrade.'Date/Time')
+    $numDays = $closeDate - $openDate
+    $null = $tradeDuration.Add($numDays)
+}
+
+Write-Header
+Write-Output "Trade Size by Duration"
+$tradeDuration.TotalDays | group | sort {[int]$_.Count}, {[int]$_.Name} | Select @{n='TradeSize'; e={$_.Count}}, @{n='Days';e={$_.Name}} | ft
+
+#
+# buys only
+#
+$buys = $openCloseTrade | ? {$_.FirstOpenTrade.Side -match "Buy to Open"}
+$tradeDuration = [System.Collections.ArrayList]::new()
+
+foreach ($trade in $buys)
+{
+    $openDate = [datetime]::Parse($trade.FirstOpenTrade.'Date/Time')
+    $closeDate = [datetime]::Parse($trade.CloseTrade.'Date/Time')
+    $numDays = $closeDate - $openDate
+    $null = $tradeDuration.Add($numDays)
+}
+
+Write-Header
+Write-Output "Long Trade Size by Duration"
+if ($tradeDuration.Count)
+{
+    $tradeDuration.TotalDays | group | sort {[int]$_.Count}, {[int]$_.Name} | Select @{n='TradeSize'; e={$_.Count}}, @{n='Days';e={$_.Name}} | ft
+}
+else
+{
+    Write-Output "NONE"
+}
+
+#
+# sells only
+#
+$sells = $openCloseTrade | ? {$_.FirstOpenTrade.Side -match "Sell to Open"}
+$tradeDuration = [System.Collections.ArrayList]::new()
+
+foreach ($trade in $sells)
+{
+    $openDate = [datetime]::Parse($trade.FirstOpenTrade.'Date/Time')
+    $closeDate = [datetime]::Parse($trade.CloseTrade.'Date/Time')
+    $numDays = $closeDate - $openDate
+    $null = $tradeDuration.Add($numDays)
+}
+
+Write-Header
+Write-Output "Short Trade Size by Duration"
+if ($tradeDuration.Count)
+{
+    $tradeDuration.TotalDays | group | sort {[int]$_.Count}, {[int]$_.Name} | Select @{n='TradeSize'; e={$_.Count}}, @{n='Days';e={$_.Name}} | ft
+}
+else
+{
+    Write-Output "NONE"
+}
+
+#
 # stats!
 #
 Add-Statistic "Total trades:" $($csvdata.Count)
 
 # get only lines that have Trade P/L
-$tradepl = $csvdata | ? {$_.'Trade P/L'}
+# $tradepl = $csvdata | ? {$_.'Trade P/L'}
 Add-Statistic "Total orders:" $($tradepl.Count)
 
 $n = $tradepl.'Trade P/L' | Measure-Object -Maximum -Minimum -Sum -Average
@@ -159,103 +265,46 @@ Add-Statistic "Average Points:" $points.Average
 Add-Statistic "Maximum Points:" $points.Maximum
 Add-Statistic "Minimum Points:" $points.Minimum
 
-$shortTrades = $tradepl | ? {$_.Amount -gt 0}
-$longTrades = $tradepl | ? {$_.Amount -lt 0}
+$shortTrades = [System.Collections.ArrayList]::new()
+$tplShort = $tradepl | ? {$_.Amount -gt 0}
+if ($tplShort) {$shortTrades.AddRange($tplShort)}
+
+$longTrades = [System.Collections.ArrayList]::new()
+$tplLong = $tradepl | ? {$_.Amount -lt 0}
+if ($tplLong) {$longTrades.AddRange($tplLong)}
 
 Add-Statistic "Short Trades:" $shortTrades.Count
 Add-Statistic "Long Trades:" $longTrades.Count
 
-$points = $shortTrades.Points | Measure-Object -Sum -Average -Maximum -Minimum
+$shortPoints = if ($shortTrades.Count) {$shortTrades.Points} else {0}
+$points = $shortPoints | Measure-Object -Sum -Average -Maximum -Minimum
 Add-Statistic "Short Average Points:" $points.Average
 Add-Statistic "Short Maximum Points:" $points.Maximum
 Add-Statistic "Short Minimum Points:" $points.Minimum
 
-$points = $longTrades.Points | Measure-Object -Sum -Average -Maximum -Minimum
+$longPoints = if ($longTrades.Count) {$longTrades.Points} else {0}
+$points = $longPoints | Measure-Object -Sum -Average -Maximum -Minimum
 Add-Statistic "Long Average Points:" $points.Average
 Add-Statistic "Long Maximum Points:" $points.Maximum
 Add-Statistic "Long Minimum Points:" $points.Minimum
 
+$exitType = ($tradepl | ? Strategy -Match 'StopLossLX')
+$exit = if ($exitType) {$exitType.Count} else {0}
+Add-Statistic "Exit StopLossLX:" $exit
+
+$exitType = ($tradepl | ? Strategy -NotMatch 'StopLossLX')
+$exit = if ($exitType) {$exitType.Count} else {0}
+Add-Statistic "Exit NOT StopLossLX:" $exit
+
+
+#
+# Output Statistics
+#
 Write-Header
 Write-Output "Statistics for '$($tradepl[0].Strategy)' from '$File'."
 Write-Output "From: $($tradepl[0].'Date/Time')"
 Write-Output "  To: $($tradepl[-1].'Date/Time')"
 $outData | Select Statistic, Data | ft
 
-Write-Header
-Write-Output "Trade distribution by trade size (1 ES == 50 SPX units)"
-$tradepl | Group Amount | Sort {[int]$_.Name} | Select @{n='Trades'; e={$_.Count}}, @{n='TradeSize';e={[int]$_.Name*-1}} | ft
-
-# calc trade length stats
-$openCloseTrade = [System.Collections.ArrayList]::new()
-$firstOpen = $false
-$openTrade = $null
-$closeTrade = $null
-
-foreach ($item in $csvdata)
-{
-    if ($item.Side -match "to Open" -and $firstOpen -eq $false)
-    {
-        $firstOpen = $true
-        $openTrade = $item
-    }
-    elseif ($item.Side -match "to Close")
-    {
-        $firstOpen = $false
-        $closeTrade = $item
-
-        $null = $openCloseTrade.Add(
-            [PSCustomObject]@{
-                'FirstOpenTrade'=$openTrade
-                'CloseTrade'=$closeTrade
-                }
-            )
-    }
-}
-
-# all trades
-$tradeDuration = [System.Collections.ArrayList]::new()
-
-foreach ($trade in $openCloseTrade)
-{
-    $openDate = [datetime]::Parse($trade.FirstOpenTrade.'Date/Time')
-    $closeDate = [datetime]::Parse($trade.CloseTrade.'Date/Time')
-    $numDays = $closeDate - $openDate
-    $null = $tradeDuration.Add($numDays)
-}
-
-Write-Header
-Write-Output "Trade Size by Duration"
-$tradeDuration.TotalDays | group | sort {[int]$_.Count}, {[int]$_.Name} | Select @{n='TradeSize'; e={$_.Count}}, @{n='Days';e={$_.Name}} | ft
-
-# buys only
-$buys = $openCloseTrade | ? {$_.FirstOpenTrade.Side -match "Buy to Open"}
-$tradeDuration = [System.Collections.ArrayList]::new()
-
-foreach ($trade in $buys)
-{
-    $openDate = [datetime]::Parse($trade.FirstOpenTrade.'Date/Time')
-    $closeDate = [datetime]::Parse($trade.CloseTrade.'Date/Time')
-    $numDays = $closeDate - $openDate
-    $null = $tradeDuration.Add($numDays)
-}
-
-Write-Header
-Write-Output "Long Trade Size by Duration"
-$tradeDuration.TotalDays | group | sort {[int]$_.Count}, {[int]$_.Name} | Select @{n='TradeSize'; e={$_.Count}}, @{n='Days';e={$_.Name}} | ft
-
-# sells only
-$sells = $openCloseTrade | ? {$_.FirstOpenTrade.Side -match "Sell to Open"}
-$tradeDuration = [System.Collections.ArrayList]::new()
-
-foreach ($trade in $sells)
-{
-    $openDate = [datetime]::Parse($trade.FirstOpenTrade.'Date/Time')
-    $closeDate = [datetime]::Parse($trade.CloseTrade.'Date/Time')
-    $numDays = $closeDate - $openDate
-    $null = $tradeDuration.Add($numDays)
-}
-
-Write-Header
-Write-Output "Short Trade Size by Duration"
-$tradeDuration.TotalDays | group | sort {[int]$_.Count}, {[int]$_.Name} | Select @{n='TradeSize'; e={$_.Count}}, @{n='Days';e={$_.Name}} | ft
-
+# Just a line that does nothing so you can set a breakpoint if needed before script exits.
+Start-Sleep -Milliseconds 100
