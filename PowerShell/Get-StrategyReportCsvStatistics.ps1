@@ -18,7 +18,7 @@ https://github.com/korygill/technical-analysis
 [CmdletBinding()]
 param (
     [string]
-    $File = '..\FGMR\FGMR-StrategyReports-SPX.csv',
+    $File = 'D:\temp\StrategyReports_SPX_GapWithStop.csv',
 
     [switch]
     $ShowFileContents
@@ -94,7 +94,7 @@ Write-Output "Trade Unite Size is '$tradeUnitSize' (FYI: 1 ES == 50 SPX units)`r
 foreach ($item in $csvdata)
 {
     $item.Amount = [double]($item.Amount | Convert-CurrencyStringToDecimal)
-    $item.Price = $item.Price | Convert-CurrencyStringToDecimal
+    $item.Price = [double]($item.Price | Convert-CurrencyStringToDecimal)
     $tpl = [double]($item.'Trade P/L' | Convert-CurrencyStringToDecimal)
     $item.'Trade P/L' = if ($tpl -eq 0) {""} else {$tpl}
     $pl = [double]($item.'P/L' | Convert-CurrencyStringToDecimal)
@@ -120,7 +120,6 @@ if ($ShowFileContents)
 # get only lines that have Trade P/L
 #
 $tradepl = $csvdata | ? {$_.'Trade P/L'}
-#$tradepl = $csvdata | ? {$_.'Trade P/L' -and ($_.'Date/Time' -lt [datetime]::Parse('12/15/2018') -or $_.'Date/Time' -gt [datetime]::Parse('12/31/2018'))}
 
 Write-Header
 Write-Output "Trade distribution by trade size (1 ES == 50 SPX units)"
@@ -143,15 +142,23 @@ foreach ($item in $csvdata)
     }
     elseif ($item.Side -match "to Close")
     {
-        $firstOpen = $false
         $closeTrade = $item
+    }
 
+    # for trades that open and close on the same day, TOS report has close trade before open trade in the file.
+    # use this logic to match them.
+    if ($firstOpen -and $closeTrade)
+    {
         $null = $openCloseTrade.Add(
             [PSCustomObject]@{
                 'FirstOpenTrade'=$openTrade
                 'CloseTrade'=$closeTrade
                 }
             )
+
+        $firstOpen = $false
+        $openTrade = $null
+        $closeTrade = $null
     }
 }
 
@@ -251,14 +258,6 @@ $n = $losers.'Trade P/L' | Measure-Object -Maximum -Minimum -Sum -Average
 Add-Statistic "Loser Total P/L:" $($n.Sum)
 Add-Statistic "Loser Min Trade P/L:" $($n.Minimum)
 Add-Statistic "Loser Max P/L:" $($n.Maximum)
-
-<#
-$max = ($tradepl.'P/L' | Measure-Object -Maximum).Maximum
-$maxTrade = $tradepl | ? {$_.'P/L' -eq $max}
-
-$min = ($tradepl.'P/L' | Measure-Object -Minimum).Minimum
-$minTrade = $tradepl | ? {$_.'P/L' -eq $min}
-#>
 
 $points = $tradepl.Points | Measure-Object -Sum -Average -Maximum -Minimum
 Add-Statistic "Average Points:" $points.Average
