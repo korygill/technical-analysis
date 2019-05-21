@@ -8,7 +8,7 @@ Alternatively, just buy or sell the glitch!
 
 ## A picture is worth a thousand words, FGMR on SOX/SOXX ##
 
-![sox-strategy-with-FloatingPL](sox-strategy-with-FloatingPL.png "sox-strategy-with-FloatingPL")
+![sox-strategy-with-Floating-PL](sox-strategy-with-Floating-PL.png "sox-strategy-with-Floating-PL")
 
 ## Strategy and Study Development ##
 
