@@ -1,0 +1,105 @@
+#
+# Fear & Greed Mean Reversion Strategy (FGMR_ADVANCED_Strategy)
+#
+# This script adapted from posts from @kerberos007
+# https://twitter.com/kerberos007
+# 
+# Want the latest version of this script?
+# https://github.com/korygill/technical-analysis
+#
+# Use on thinkorswim and thinkscript
+# author @korygill
+#
+
+script GetBollingerBandPercent
+{
+    input price = close;
+    input upper = 2;
+    input lower = 2;
+    input averageType = AverageType.SIMPLE;
+    input displace = 0;
+    input length = 20;
+
+    def upperBand = BollingerBands(price, displace, length, lower, upper, averageType).UpperBand;
+    def lowerBand = BollingerBands(price, displace, length, lower, upper, averageType).LowerBand;
+
+    plot BBPercent = (price - lowerBand) / (upperBand - lowerBand) * 100;
+}
+
+def price = close;
+input averageType = AverageType.SIMPLE;
+input displace = 0;
+input length = 20;
+input signalType = {default BOTH, LONG, SHORT};
+input BO = {PB25, default PB20, PB15, PB12, PB10};
+input SC = {PB25, default PB20, PB15, PB12, PB10};
+input SO = {PB25, default PB20, PB15, PB12, PB10};
+input BC = {PB25, default PB20, PB15, PB12, PB10};
+input BaseLine = 0;
+input HalfLine = 50;
+input UnitLine = 100;
+
+def PB25 = GetBollingerBandPercent(price, 2.5, -2.5);
+def PB20 = GetBollingerBandPercent(price, 2.0, -2.0);
+def PB15 = GetBollingerBandPercent(price, 1.5, -1.5);
+def PB12 = GetBollingerBandPercent(price, 1.2, -1.2);
+def PB10 = GetBollingerBandPercent(price, 1.0, -1.0);
+
+def tradeSize = 1;
+
+def BO_PB = if BO == BO.PB10 then PB10
+            else if BO == BO.PB12 then PB12
+            else if BO == BO.PB15 then PB15
+            else if BO == BO.PB25 then PB25
+            else PB20;
+def SC_PB = if SC == SC.PB10 then PB10
+            else if SC == SC.PB12 then PB12
+            else if SC == SC.PB15 then PB15
+            else if SC == SC.PB25 then PB25
+            else PB20;
+def SO_PB = if SO == SO.PB10 then PB10
+            else if SO == SO.PB12 then PB12
+            else if SO == SO.PB15 then PB15
+            else if SO == SO.PB25 then PB25
+            else PB20;
+def BC_PB = if BC == BC.PB10 then PB10
+            else if BC == BC.PB12 then PB12
+            else if BC == BC.PB15 then PB15
+            else if BC == BC.PB25 then PB25
+            else PB20;
+            
+# LONG -----------------
+AddOrder(OrderType.BUY_TO_OPEN, 
+    Crosses(BO_PB, BaseLine, CrossingDirection.ABOVE) and signalType != signalType.SHORT, 
+    tradeSize = tradeSize,
+    tickcolor = Color.WHITE, arrowcolor = Color.GREEN, name = "FGMR"
+);
+
+AddOrder(OrderType.SELL_TO_CLOSE, 
+    Crosses(SC_PB, UnitLine, CrossingDirection.ABOVE) and signalType != signalType.SHORT, 
+    tradeSize = tradeSize,
+    tickcolor = Color.WHITE, arrowcolor = Color.RED, name = "FGMR"
+);
+
+# SHORT -----------------
+AddOrder(OrderType.SELL_TO_OPEN, 
+    Crosses(SO_PB, UnitLine, CrossingDirection.BELOW) and signalType != signalType.LONG, 
+    tradeSize = tradeSize,
+    tickcolor = Color.WHITE, arrowcolor = Color.YELLOW, name = "FGMR"
+);
+
+AddOrder(OrderType.BUY_TO_CLOSE, 
+    Crosses(BC_PB, BaseLine, CrossingDirection.BELOW) and signalType != signalType.LONG,
+    tradeSize = tradeSize,
+    tickcolor = Color.WHITE, arrowcolor = Color.MAGENTA, name = "FGMR"
+);
+
+AddLabel(yes, "[FGMR_Advanced]", Color.GRAY);
+
+AddLabel(yes, GetSymbol(), COLOR.CYAN);
+AddLabel(yes, "Long="+BO+" cross > "+BaseLine+", Cover="+SC+" cross > "+UnitLine, COLOR.GREEN);
+AddLabel(yes, "Short="+SO+" cross < "+UnitLine+", Cover="+BC+" cross < "+BaseLine, COLOR.RED);
+AddLabel(yes, "Go Long", Color.GREEN);
+AddLabel(yes, "Cover Long", Color.RED);
+AddLabel(yes, "Go Short", Color.YELLOW);
+AddLabel(yes, "Cover Short", Color.MAGENTA);
