@@ -9,7 +9,7 @@ Bookmark this page. It contains links to all other content, which may be reorgan
 
 [FGMR_ADVANCED](/FGMR_ADVANCED/FGMR_ADVANCED.md)
 
-FGMR Advananced is an refactored, updated and combined strategy and study that lets you input settings to tune FGMR for a given symbol. You can use FGMR Advanced to replace the original SPX/VIX/SOX studies below. See the other pages here for how the strategy works.
+FGMR Advanced is an refactored, updated and combined strategy and study that lets you input settings to tune FGMR for a given symbol. You can use FGMR Advanced to replace the original SPX/VIX/SOX studies below. See the other pages here for how the strategy works.
 
 Attribution: This is a long/short strategy based on the work of [@kerberos007](https://twitter.com/kerberos007). If you look at his feed, you will see lots of work regarding this strategy using Bollinger Bands, Percent B (%B), and some initial parameters that give good back testing results.
 
