@@ -132,7 +132,7 @@ void CreateExpirationText(SCStudyInterfaceRef sc)
   	sc.UseTool(Tool);
 }
 #endif
-#pragma endregion Useful but not essential to study calculation code
+#pragma endregion Expiration
 
 
 // ===========================================================================
@@ -145,7 +145,7 @@ void LogDateTime(SCStudyInterfaceRef sc, SCDateTime& time) {
         time.GetHour(), time.GetMinute(), time.GetSecond());
     sc.AddMessageToLog(msg, 1);
 }
-#pragma endregion Helper Code
+#pragma endregion Useful but not essential to study calculation code
 
 
 // ===========================================================================
@@ -171,9 +171,7 @@ SCSFExport scsf_NewStudyTemplate(SCStudyInterfaceRef sc)
     // Inputs
     //
     i = 0;
-    SCInputRef Input_Sensitivity = sc.Input[i++];
     SCInputRef Input_Length = sc.Input[i++];
-    SCInputRef Input_Threshold = sc.Input[i++];
 
     //
     // Set Defaults
@@ -209,13 +207,6 @@ SCSFExport scsf_NewStudyTemplate(SCStudyInterfaceRef sc)
         Input_Length.SetInt(21);
 #pragma endregion Inputs
 
-#if ENABLE_INTERNAL_USER_ACCESS_CHECKS
-        //
-        // Security Check
-        //
-        r_IsAuthorizedUser = GetUserAuthorization(sc);
-#endif
-
         return;
     }
 
@@ -237,6 +228,14 @@ SCSFExport scsf_NewStudyTemplate(SCStudyInterfaceRef sc)
     // User Access Checks for when distributed via direct dll sharing.
     //
 #if ENABLE_INTERNAL_USER_ACCESS_CHECKS
+    if (sc.Index == 0) 
+    {
+        //
+        // Security Check
+        //
+        r_IsAuthorizedUser = GetUserAuthorization(sc);
+    }   
+
     if (r_IsAuthorizedUser == 0)
     {
         if (sc.Index == 0)
