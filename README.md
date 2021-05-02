@@ -3,6 +3,10 @@ Repository for technical analysis scripts, code, algorithms related to stocks, f
 
 Bookmark this page. It contains links to all other content, which may be reorganized at anytime.
 
+# Sierra Chart strategies and studies #
+
+[SIERRA_CHART](/SIERRA_CHART/SIERRA_CHART.md)
+
 # thinkorswim / thinkscript strategies and studies #
 
 ## Fear & Greed Mean Reversion Advanced Strategy (FGMR_ADVANCED) ##
